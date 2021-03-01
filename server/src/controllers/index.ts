@@ -4,6 +4,7 @@ import moment from 'moment';
 
 interface IRegras {
     id_regra: number,
+    nome_regra: string,
     qtd_dias_inicial: number;
     qtd_dias_final: number; 
     qtd_multa: number;
@@ -60,18 +61,18 @@ export async function createConta (req: Request, res: Response) {
         // });
         const regra_aplicada = await verifica_regra(diferenca_dias);
 
-        if(regra_aplicada.length > 0){
+        if(regra_aplicada){
             switch (tipo_juros){
                 case 'composto':
-                    valor_final = calcula_composto(valor_original, regra_aplicada[0].qtd_juros, regra_aplicada[0].qtd_multa, diferenca_dias);
+                    valor_final = calcula_composto(valor_original, regra_aplicada.qtd_juros, regra_aplicada.qtd_multa, diferenca_dias);
                 break;
                 default:
-                    valor_final = calcula_simples(valor_original, regra_aplicada[0].qtd_juros, regra_aplicada[0].qtd_multa, diferenca_dias);
+                    valor_final = calcula_simples(valor_original, regra_aplicada.qtd_juros, regra_aplicada.qtd_multa, diferenca_dias);
                 break;
             }
         }
 
-        const id_regra = regra_aplicada[0] ? regra_aplicada[0].id_regra : undefined;
+        const id_regra = regra_aplicada ? regra_aplicada.id_regra : undefined;
         const transact = await knex.transaction();
         const insert = await transact('contas').insert({
             nome_conta, 
@@ -115,11 +116,12 @@ export function calcula_simples(valor_original: number, qtd_juros: number, qtd_m
     return valor_final.toFixed(2);
 }
 
-export async function verifica_regra(diferenca_dias: number):Promise<IRegras[]> {
+export async function verifica_regra(diferenca_dias: number):Promise<IRegras | undefined> {
     const regras:IRegras[] = await knex('regras_atraso')
-            .select('id_regra', 'qtd_dias_inicial', 'qtd_dias_final', 'qtd_multa', 'qtd_juros');
-    return regras.filter( regra => {
+            .select('id_regra', 'nome_regra', 'qtd_dias_inicial', 'qtd_dias_final', 'qtd_multa', 'qtd_juros');
+    const regra_aplicada = regras.filter( regra => {
         if(!regra.qtd_dias_final) regra.qtd_dias_final = Infinity;
         return regra.qtd_dias_inicial < diferenca_dias && regra.qtd_dias_final >= diferenca_dias;
     });
+    return regra_aplicada.length > 0 ? regra_aplicada[0] : undefined;
 }
