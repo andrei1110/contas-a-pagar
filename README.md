@@ -5,9 +5,9 @@ REST API para um sistema de controle de contas a pagar.
 
 ### Requisitos
 As seguintes portas devem estar livres:
-- 3001 (API REST)
-- 3006 (Banco de dados)
-- 3000 (Frontend)
+* 3001 (API REST)
+* 3006 (Banco de dados)
+* 3000 (Frontend)
 
 ### Usando o docker-compose
 **APENAS LINUX:** Se você utiliza Linux, primeiro siga esse tutorial: [Como instalar o Docker engine Linux](https://docs.docker.com/engine/install/#server)
@@ -137,35 +137,41 @@ Para rodar os testes, é necessário entrar no diretório ```server``` e rodar o
 yarn && yarn test
 ```
 
-Os testes realizados são:
-- Juros Compostos
-- Juros Simples
+Foram apenas criados testes para os casos triviais e de sucesso. Os testes realizados são:
+* Juros Compostos
+* Juros Simples
+* Regras de atraso:
+  - 1 dia atrasado
+  - 4 dias atrasado
+  - 30 dias atrasado
+  - 3 dias adiantado (-3)
+  - Paga em dia (0)
 
 ## Tecnologias usadas
-- NodeJS
-- Mysql
-- Docker
-- ReactJS
+* NodeJS
+* Mysql
+* Docker
+* ReactJS
 
 ### Pacotes usados NodeJS (API-Backend)
-- Express
-- Cors
-- MomentJS
-- Knex
-- Mysql2
-- Typescript
-- Jest
-- TS-Jest
+* Express
+* Cors
+* MomentJS
+* Knex
+* Mysql2
+* Typescript
+* Jest
+* TS-Jest
 
 ### Pacotes usados no ReactJS (Front-end)
-- Axios
-- React Bootstrap
-- Sweetalerts
-- MomentJS
-- React-dotenv
+* Axios
+* React Bootstrap
+* Sweetalerts
+* MomentJS
+* React-dotenv
 
 ### Linguagem de programação
-- JavaScript (TypeScript)
+* JavaScript (TypeScript)
 
 ## Estrutura dos arquivos e pastas
 ```
